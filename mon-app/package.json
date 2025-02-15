@@ -9,10 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/config": "^10.0.10",
     "@react-native-firebase/app": "^21.10.0",
     "@react-native-firebase/firestore": "^21.10.0",
     "@reacticons/ionicons": "^7.1.0",
     "expo": "~52.0.33",
+    "expo-config-plugins": "^0.1.2",
     "expo-constants": "~17.0.5",
     "expo-linking": "~7.0.5",
     "expo-router": "~4.0.17",
