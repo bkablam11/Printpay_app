@@ -1,8 +1,7 @@
 import { Stack, Tabs } from "expo-router";
-import IonIcon from '@reacticons/ionicons';
-import react from "react";
 
 const TabsLayout = () => {
+
     return (
         <Tabs>
         <Tabs.Screen

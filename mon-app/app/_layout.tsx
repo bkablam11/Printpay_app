@@ -3,7 +3,7 @@ import react from "react";
 
 const RootLayout = () => {
     return (<Stack>
-        <Stack.Screen name="(screens)"
+        <Stack.Screen name="screens"
         options={{
             headerShown:false,
         }}

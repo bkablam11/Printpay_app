@@ -26,8 +26,6 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-config-plugins",
-      "@prisma/react-native",
       "expo-router"
     ]
   }

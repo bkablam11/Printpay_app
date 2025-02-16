@@ -1,36 +1,3 @@
-/* import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
-import TeacherCard from "../components/TeacherCard";
-import { teachers } from "../data/fakeData";
-
-const ExploreScreen = ({ navigation }) => {
-  const renderTeacher = ({ item }) => (
-    <TeacherCard
-      teacher={item}
-      onPress={() => navigation.navigate("TeacherDetails", { teacher: item })}
-    />
-  );
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={teachers}
-        renderItem={renderTeacher}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
-  },
-});
-
-export default ExploreScreen; */
 
 import React from "react";
 import { View, Text, FlatList, StyleSheet, SafeAreaView, Image } from "react-native";
