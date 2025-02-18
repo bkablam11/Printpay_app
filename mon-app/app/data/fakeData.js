@@ -1,4 +1,4 @@
-const fakeData = {
+export const fakeData = {
     teachers: [
       { id: 1, name: 'John Doe', impressions: 10, payments: 200 },
       { id: 2, name: 'Jane Smith', impressions: 15, payments: 300 },
@@ -12,6 +12,11 @@ const fakeData = {
       { id: 10, name: 'James Anderson', impressions: 9, payments: 190 },
     ],
   };
-  
-  export default fakeData;
-  
+
+export const user = {
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  profilePicture: 'https://via.placeholder.com/150'
+};
+
+

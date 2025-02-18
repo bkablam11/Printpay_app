@@ -2,43 +2,39 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import ScreenWrapper from '../components/ScreenWrapper';
+import Typo from '../components/Typo';
 
 const HomeScreen = () => {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.navbar}>
-        <Text style={styles.navbarTitle}>PrintPay</Text>
-      </View>
-      <Image
-        source={{ uri: 'https://example.com/your-image.jpg' }}
-        style={styles.headerImage}
-      />
-      <Text style={styles.title}>Bienvenue sur PrintPay</Text>
-      <Text style={styles.subtitle}>Gérez facilement les impressions et les paiements des enseignants</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Dernières Activités</Text>
-        <Text style={styles.cardContent}>Aucune activité récente</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Link href="../screens/dashboard" asChild>
-          <TouchableOpacity style={styles.button}>
-            <MaterialIcons name="bar-chart" size={24} color="white" />
-            <Text style={styles.buttonText}>Voir le Dashboard</Text>
+    <ScreenWrapper>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.navbar}>
+          <Text style={styles.navbarTitle}>PrintPay</Text>
+        </View>
+        <Image
+          source={require("../../assets/avatars/welcome.png")}
+          style={styles.headerImage}
+          resizeMode='contain'
+        />
+        <Link href="../(screens)/login" asChild>
+          <TouchableOpacity style={styles.loginButton}>
+            <MaterialIcons name="login" size={24} color="white" />
+            <Typo fontWeight={"500"} style={styles.loginButtonText}>Connexion</Typo>
           </TouchableOpacity>
         </Link>
-        <View style={styles.space} />
-        <Link href="../screens/paiement" asChild>
-          <TouchableOpacity style={styles.button}>
-            <MaterialIcons name="add-circle" size={24} color="white" />
-            <Text style={styles.buttonText}>Ajouter un Paiement</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
-      <Image
-        source={{ uri: 'https://example.com/another-image.jpg' }}
-        style={styles.footerImage}
-      />
-    </ScrollView>
+        <Text style={styles.title}>Bienvenue sur PrintPay</Text>
+        <Text style={styles.subtitle}>Gérez facilement les impressions et les paiements des enseignants</Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Dernières Activités</Text>
+          <Text style={styles.cardContent}>Aucune activité récente</Text>
+        </View>
+        <Image
+          source={{ uri: 'https://example.com/another-image.jpg' }}
+          style={styles.footerImage}
+        />
+      </ScrollView>
+    </ScreenWrapper>
   );
 };
 
@@ -55,6 +51,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#6200ee',
     alignItems: 'center',
+    borderRadius: 15,
   },
   navbarTitle: {
     color: '#fff',
@@ -97,12 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  buttonContainer: {
-    width: '100%',
-    marginBottom: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+
   button: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -121,6 +113,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 150,
     marginTop: 16,
+  },
+  loginButton: {
+    width: '50%',
+    height: 50,
+    backgroundColor: '#6200ee',
+    borderRadius: 8,
+    marginBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
 });
 
