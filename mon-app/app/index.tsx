@@ -9,7 +9,7 @@ const HeadingPage = () => {
         setTimeout(() => {
             router.push('./(screens)/homePage');
         }, 2000);
-    }, []);   
+    }, []);
     return (
         <View style={styles.container}>
             <Image
@@ -22,17 +22,17 @@ const HeadingPage = () => {
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
-        backgroundColor:colors.neutral900,
+        backgroundColor: '#fff', // Changement de la couleur de fond en blanc
     },
-    logo:{
+    logo: {
         aspectRatio: 1,
         height: "20%",
     },
-})
+});
 
 export default HeadingPage;

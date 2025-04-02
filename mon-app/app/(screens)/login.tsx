@@ -1,19 +1,56 @@
-import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
 import { user } from '../data/fakeData';
+import React, { useState } from 'react'
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
+import BackButton from '../components/BackButton';
 
 const Login = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const handleLogin = () => {
+        // Handle login logic here
+        console.log('Email:', email)
+        console.log('Password:', password)
+    }
+
     return (
         <View style={styles.container}>
-            <Image source={{ uri: user.profilePicture }} style={styles.profilePicture} />
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.email}>{user.email}</Text>
-            <Text style={styles.welcomeMessage}>Welcome to the app!</Text>
+            <BackButton iconSize={20} />
+            <Text style={styles.title}>Login</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+            <Button title="Login" onPress={handleLogin} />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 20,
+        padding: 10
+    },
     container: {
         flex: 1,
         justifyContent: 'center',

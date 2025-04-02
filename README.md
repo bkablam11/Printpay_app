@@ -2,7 +2,7 @@ Bien sûr ! Voici un exemple de README pour votre projet PintPay :
 
 ---
 
-# PintPay
+# PrintPay
 
 PintPay est une application mobile conçue pour gérer les impressions et les paiements des enseignants. L'application utilise React Native pour le développement et Firebase pour la base de données.
 

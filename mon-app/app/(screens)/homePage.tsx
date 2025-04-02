@@ -1,9 +1,13 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Typo from '../components/Typo';
+import Animated, { FadeIn } from "react-native-reanimated";
+import Button from '../components/Button';
+import { colors } from '@/constants/theme';
+
 
 const HomeScreen = () => {
   return (
@@ -12,7 +16,8 @@ const HomeScreen = () => {
         <View style={styles.navbar}>
           <Text style={styles.navbarTitle}>PrintPay</Text>
         </View>
-        <Image
+        <Animated.Image
+          entering={FadeIn.duration(1000)}
           source={require("../../assets/avatars/welcome.png")}
           style={styles.headerImage}
           resizeMode='contain'
@@ -29,10 +34,12 @@ const HomeScreen = () => {
           <Text style={styles.cardTitle}>Dernières Activités</Text>
           <Text style={styles.cardContent}>Aucune activité récente</Text>
         </View>
-        <Image
-          source={{ uri: 'https://example.com/another-image.jpg' }}
-          style={styles.footerImage}
-        />
+        <Link href="../(screens)/register" asChild>
+          <TouchableOpacity style={styles.loginButton}>
+            <MaterialIcons name="person-add" size={24} color="white" />
+            <Typo fontWeight={"500"} style={styles.loginButtonText}>Inscription</Typo>
+          </TouchableOpacity>
+        </Link>
       </ScrollView>
     </ScreenWrapper>
   );
