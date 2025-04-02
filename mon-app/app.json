@@ -4,6 +4,9 @@
     "slug": "mon-app",
     "scheme": "mon-app-scheme",
     "version": "1.0.0",
+    "notification": {
+      "vapidPublicKey": "BAyY1QXekRfsE79urhZaU_mrLYGR8coV_MOwQKBQmTEjsFzE0MeKj1R78Kr5U84Gs"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
