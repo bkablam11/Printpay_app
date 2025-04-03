@@ -1,59 +1,55 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker"; // Importez DateTimePicker
-import { useRouter, useLocalSearchParams } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker"; // Sélecteur de date
+import { useRouter } from "expo-router"; // Importez useRouter pour la navigation
 import fakeData from "../data/fakeData";
 
-const MonthlyReport = () => {
-  const router = useRouter();
-  const { teacherId } = useLocalSearchParams();
-
-  if (!teacherId) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Paramètre teacherId manquant.</Text>
-      </View>
-    );
-  }
-
-  const teacher = fakeData.teachers.find((t) => t.id === parseInt(teacherId));
-
-  if (!teacher) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Enseignant introuvable.</Text>
-      </View>
-    );
-  }
-
+const GlobalReport = () => {
+  const router = useRouter(); // Initialisez le routeur
   const [startDate, setStartDate] = useState(new Date()); // Date de début
   const [endDate, setEndDate] = useState(new Date()); // Date de fin
   const [showStartPicker, setShowStartPicker] = useState(false); // Afficher le sélecteur de date de début
   const [showEndPicker, setShowEndPicker] = useState(false); // Afficher le sélecteur de date de fin
-  const [filteredPrints, setFilteredPrints] = useState(teacher?.prints || []);
+  const [filteredData, setFilteredData] = useState([]); // Données filtrées
 
-  // Fonction pour filtrer les impressions par période
-  const filterPrintsByDate = () => {
-    const filtered = teacher.prints.filter((print) => {
-      const printDate = new Date(print.date);
-      return printDate >= startDate && printDate <= endDate;
-    });
+  // Fonction pour filtrer les impressions de tous les enseignants
+  const filterDataByDate = () => {
+    const filtered = fakeData.teachers
+      .map((teacher) => {
+        const filteredPrints = teacher.prints.filter((print) => {
+          const printDate = new Date(print.date);
+          return printDate >= startDate && printDate <= endDate;
+        });
 
-    setFilteredPrints(filtered);
+        if (filteredPrints.length > 0) {
+          return {
+            ...teacher,
+            prints: filteredPrints,
+          };
+        }
+        return null;
+      })
+      .filter((teacher) => teacher !== null); // Supprimez les enseignants sans impressions
+
+    setFilteredData(filtered);
   };
 
-  // Calcul des totaux
-  const totalCopies = filteredPrints.reduce((sum, print) => sum + print.copies, 0);
-  const totalPayment = filteredPrints.reduce((sum, print) => sum + print.totalCost, 0);
+  // Calcul des totaux globaux
+  const totalCopies = filteredData.reduce(
+    (sum, teacher) => sum + teacher.prints.reduce((subSum, print) => subSum + print.copies, 0),
+    0
+  );
+  const totalPayment = filteredData.reduce(
+    (sum, teacher) => sum + teacher.prints.reduce((subSum, print) => subSum + print.totalCost, 0),
+    0
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Rapport Mensuel</Text>
-      <Text style={styles.subtitle}>Enseignant : {teacher.name}</Text>
+      <Text style={styles.title}>Rapport Global</Text>
 
-      {/* Section pour sélectionner une période */}
+      {/* Sélecteurs de dates */}
       <View style={styles.filterContainer}>
-        {/* Bouton pour sélectionner la date de début */}
         <TouchableOpacity onPress={() => setShowStartPicker(true)} style={styles.dateButton}>
           <Text style={styles.dateButtonText}>
             Date de début : {startDate.toISOString().split("T")[0]}
@@ -71,7 +67,6 @@ const MonthlyReport = () => {
           />
         )}
 
-        {/* Bouton pour sélectionner la date de fin */}
         <TouchableOpacity onPress={() => setShowEndPicker(true)} style={styles.dateButton}>
           <Text style={styles.dateButtonText}>
             Date de fin : {endDate.toISOString().split("T")[0]}
@@ -89,7 +84,7 @@ const MonthlyReport = () => {
           />
         )}
 
-        <TouchableOpacity style={styles.button} onPress={filterPrintsByDate}>
+        <TouchableOpacity style={styles.button} onPress={filterDataByDate}>
           <Text style={styles.buttonText}>Filtrer</Text>
         </TouchableOpacity>
       </View>
@@ -100,25 +95,34 @@ const MonthlyReport = () => {
         <Text style={styles.summaryText}>Paiement total : {totalPayment} FCFA</Text>
       </View>
 
-      {/* Liste des impressions */}
+      {/* Liste des enseignants et leurs impressions */}
       <FlatList
-        data={filteredPrints}
-        keyExtractor={(item, index) => index.toString()}
+        data={filteredData}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text>Copies : {item.copies}</Text>
-            <Text>Coût : {item.totalCost} FCFA</Text>
-            <Text>Date : {item.date}</Text>
+            <Text style={styles.teacherName}>Enseignant : {item.name}</Text>
+            <FlatList
+              data={item.prints}
+              keyExtractor={(print, index) => index.toString()}
+              renderItem={({ item: print }) => (
+                <View style={styles.printCard}>
+                  <Text>Copies : {print.copies}</Text>
+                  <Text>Coût : {print.totalCost} FCFA</Text>
+                  <Text>Date : {print.date}</Text>
+                </View>
+              )}
+            />
           </View>
         )}
       />
 
-      {/* Bouton pour revenir à la page teacher/[id].js */}
+      {/* Bouton pour revenir au tableau de bord */}
       <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => router.push(`/teacher/${teacherId}`)}
+        style={styles.button}
+        onPress={() => router.push("/dashboard")} // Naviguez vers dashboard.js
       >
-        <Text style={styles.backButtonText}>Retour à l'enseignant</Text>
+        <Text style={styles.buttonText}>Retour au Tableau de Bord</Text>
       </TouchableOpacity>
     </View>
   );
@@ -133,11 +137,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 18,
     marginBottom: 16,
     textAlign: "center",
   },
@@ -187,22 +186,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
   },
-  backButton: {
-    marginTop: 16,
-    padding: 10,
-    backgroundColor: "#6200ee",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "white",
-    fontSize: 16,
-  },
-  errorText: {
+  teacherName: {
     fontSize: 18,
-    color: "red",
-    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  printCard: {
+    padding: 8,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 8,
+    marginBottom: 8,
   },
 });
 
-export default MonthlyReport;
+export default GlobalReport;

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router"; // Remplacez useSearchParams par useLocalSearchParams
 import fakeData from "../../data/fakeData";
 
@@ -12,23 +12,58 @@ const TeacherDetails = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>Enseignant introuvable.</Text>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Retour</Text>
+        <TouchableOpacity onPress={() => router.push("/dashboard")} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Retour au Tableau de Bord</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
+  // Calculer les impressions totales et le paiement total
+  const totalCopies = teacher.prints?.reduce((sum, print) => sum + print.copies, 0) || 0;
+  const totalPayment = teacher.prints?.reduce((sum, print) => sum + print.totalCost, 0) || 0;
+
   return (
     <View style={styles.container}>
+      {/* Informations de l'enseignant */}
       <Image source={teacher.avatar} style={styles.avatar} />
       <Text style={styles.name}>{teacher.name}</Text>
-      <Text style={styles.subject}>Matière : {teacher.subject}</Text>
-      <Text style={styles.info}>Impressions : {teacher.impressions}</Text>
-      <Text style={styles.info}>Paiement : {teacher.payment} FCFA</Text>
+      <Text style={styles.info}>Impressions totales : {totalCopies}</Text>
+      <Text style={styles.info}>Paiement total : {totalPayment} FCFA</Text>
 
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Retour</Text>
+      {/* Liste des impressions */}
+      <Text style={styles.sectionTitle}>Impressions effectuées :</Text>
+      {teacher.prints && teacher.prints.length > 0 ? (
+        <FlatList
+          data={teacher.prints}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.printCard}>
+              <Text style={styles.printInfo}>Copies : {item.copies}</Text>
+              <Text style={styles.printInfo}>Coût : {item.totalCost} FCFA</Text>
+              <Text style={styles.printInfo}>Date : {item.date}</Text>
+            </View>
+          )}
+        />
+      ) : (
+        <Text style={styles.noPrintsText}>Aucune impression enregistrée.</Text>
+      )}
+
+      {/* Bouton pour revenir au tableau de bord */}
+      <TouchableOpacity onPress={() => router.push("/dashboard")} style={styles.backButton}>
+        <Text style={styles.backButtonText}>Retour au Tableau de Bord</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          router.push({
+            pathname: "/MonthlyReport",
+            params: { teacherId: id },
+          })
+        }
+      >
+        <Text style={styles.buttonText}>Rapport Mensuel de l'enseignant</Text>
       </TouchableOpacity>
     </View>
   );
@@ -52,15 +87,38 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
   },
-  subject: {
-    fontSize: 18,
-    color: "#555",
-    marginBottom: 8,
-  },
   info: {
     fontSize: 16,
     color: "#777",
     marginBottom: 4,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 16,
+    marginBottom: 8,
+    alignSelf: "flex-start",
+  },
+  printCard: {
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    width: "100%",
+  },
+  printInfo: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 4,
+  },
+  noPrintsText: {
+    fontSize: 16,
+    color: "#777",
+    marginTop: 16,
+    textAlign: "center",
   },
   errorText: {
     fontSize: 18,
@@ -74,6 +132,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   backButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  button: {
+    marginTop: 16,
+    padding: 10,
+    backgroundColor: "#6200ee",
+    borderRadius: 8,
+  },
+  buttonText: {
     color: "white",
     fontSize: 16,
   },

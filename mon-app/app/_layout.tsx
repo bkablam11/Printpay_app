@@ -4,9 +4,9 @@ import { StyleSheet } from "react-native";
 
 const _layout = () => {
     return (
-    <Stack
-        screenOptions={{ headerShown: false }}>
-    </Stack>
+        <Stack
+            screenOptions={{ headerShown: false }}>
+        </Stack>
     );
 };
 

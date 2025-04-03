@@ -7,31 +7,36 @@ import {
     StyleSheet,
     Alert,
 } from "react-native";
+import { useRouter } from "expo-router"; // Importez useRouter pour la navigation
 import TeacherForm from "../components/TeacherForm";
 import fakeData from "../data/fakeData";
 
 type Teacher = {
     id: number;
     name: string;
-    subject: string;
-    impressions: number;
-    payment: number;
+    avatar: any;
+    prints: {
+        copies: number;
+        totalCost: number;
+        date: string;
+    }[];
 };
 
 const ManageTeachers: React.FC = () => {
+    const router = useRouter(); // Initialisez le routeur
     const [teachers, setTeachers] = useState<Teacher[]>(fakeData.teachers);
     const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
 
-    const handleAddTeacher = (teacher: Omit<Teacher, "id">) => {
-        setTeachers([...teachers, { id: Date.now(), ...teacher }]);
+    const handleAddTeacher = (teacher: { name: string }) => {
+        setTeachers([...teachers, { id: Date.now(), name: teacher.name, avatar: null, prints: [] }]);
         setEditingTeacher(null);
     };
 
-    const handleEditTeacher = (teacher: Omit<Teacher, "id">) => {
+    const handleEditTeacher = (teacher: { name: string }) => {
         if (editingTeacher) {
             setTeachers(
                 teachers.map((t) =>
-                    t.id === editingTeacher.id ? { ...t, ...teacher } : t
+                    t.id === editingTeacher.id ? { ...t, name: teacher.name } : t
                 )
             );
             setEditingTeacher(null);
@@ -55,11 +60,20 @@ const ManageTeachers: React.FC = () => {
     return (
         <View style={styles.container}>
             {editingTeacher ? (
-                <TeacherForm
-                    initialData={editingTeacher}
-                    onSubmit={editingTeacher ? handleEditTeacher : handleAddTeacher}
-                    buttonText={editingTeacher ? "Modifier" : "Ajouter"}
-                />
+                <>
+                    <TeacherForm
+                        initialData={editingTeacher}
+                        onSubmit={editingTeacher ? handleEditTeacher : handleAddTeacher}
+                        buttonText={editingTeacher ? "Modifier" : "Ajouter"}
+                    />
+                    {/* Bouton pour revenir à la liste des enseignants */}
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => setEditingTeacher(null)} // Réinitialisez l'édition pour revenir à la liste
+                    >
+                        <Text style={styles.backButtonText}>Retour à la Liste des Enseignants</Text>
+                    </TouchableOpacity>
+                </>
             ) : (
                 <>
                     <Text style={styles.title}>Liste des Enseignants</Text>
@@ -69,7 +83,6 @@ const ManageTeachers: React.FC = () => {
                         renderItem={({ item }) => (
                             <View style={styles.teacherCard}>
                                 <Text style={styles.teacherName}>{item.name}</Text>
-                                <Text style={styles.teacherSubject}>{item.subject}</Text>
                                 <View style={styles.actions}>
                                     <TouchableOpacity onPress={() => setEditingTeacher(item)}>
                                         <Text style={styles.editButton}>Modifier</Text>
@@ -88,6 +101,14 @@ const ManageTeachers: React.FC = () => {
                         onPress={() => setEditingTeacher({} as Teacher)}
                     >
                         <Text style={styles.addButtonText}>Ajouter un Enseignant</Text>
+                    </TouchableOpacity>
+
+                    {/* Bouton pour revenir au tableau de bord */}
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => router.push("/dashboard")} // Naviguez vers dashboard.js
+                    >
+                        <Text style={styles.backButtonText}>Retour au Tableau de Bord</Text>
                     </TouchableOpacity>
                 </>
             )}
@@ -120,10 +141,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    teacherSubject: {
-        fontSize: 16,
-        color: "#555",
-    },
     actions: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -140,8 +157,20 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 8,
         alignItems: "center",
+        marginTop: 16,
     },
     addButtonText: {
+        color: "white",
+        fontSize: 16,
+    },
+    backButton: {
+        backgroundColor: "#6200ee",
+        padding: 10,
+        borderRadius: 8,
+        alignItems: "center",
+        marginTop: 16,
+    },
+    backButtonText: {
         color: "white",
         fontSize: 16,
     },

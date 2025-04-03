@@ -2,28 +2,20 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 
 type TeacherFormProps = {
-    onSubmit: (data: { name: string; subject: string; impressions: number; payment: number }) => void;
-    initialData?: { name?: string; subject?: string; impressions?: number; payment?: number };
+    onSubmit: (data: { name: string }) => void;
+    initialData?: { name?: string };
     buttonText?: string;
 };
 
 const TeacherForm: React.FC<TeacherFormProps> = ({ onSubmit, initialData = {}, buttonText = "Ajouter" }) => {
     const [name, setName] = useState(initialData.name || "");
-    const [subject, setSubject] = useState(initialData.subject || "");
-    const [impressions, setImpressions] = useState(initialData.impressions || "");
-    const [payment, setPayment] = useState(initialData.payment || "");
 
     const handleSubmit = () => {
-        if (!name || !subject) {
-            alert("Veuillez remplir tous les champs obligatoires.");
+        if (!name.trim()) {
+            alert("Veuillez entrer un nom valide.");
             return;
         }
-        onSubmit({
-            name,
-            subject,
-            impressions: Number(impressions),
-            payment: Number(payment),
-        });
+        onSubmit({ name });
     };
 
     return (
@@ -34,26 +26,6 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onSubmit, initialData = {}, b
                 placeholder="Nom"
                 value={name}
                 onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Matière"
-                value={subject}
-                onChangeText={setSubject}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre d'impressions"
-                keyboardType="numeric"
-                value={impressions.toString()}
-                onChangeText={setImpressions}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Paiement (FCFA)"
-                keyboardType="numeric"
-                value={payment.toString()}
-                onChangeText={setPayment}
             />
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>{buttonText}</Text>
